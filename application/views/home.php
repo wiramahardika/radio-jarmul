@@ -10,6 +10,8 @@
     <!-- Bootstrap -->
     <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
 
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
   </head>
   <body style="background-image:url(<?php echo base_url(); ?>assets/images/bg.jpg);background-size: 100% auto;">
 
@@ -47,6 +49,32 @@
           <div class="panel-body">
             <p><b>Now Playing:</b> <span id="song-title">Loading ...</span></p>
             <audio controls="controls" src="http://<?php echo $this->input->ip_address() ?>:8000/;" autoplay></audio>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Login as broadcaster</div>
+          <div class="panel-body">
+            <form id="login-form">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input type="text" class="form-control" name="username" placeholder="Username">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                  <input type="password" class="form-control" name="password" placeholder="Password">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="g-recaptcha" data-sitekey="6LdqsTwUAAAAAJLgEAWVRb4_ctCmFxf3-JJBoyH4"></div>
+              </div>
+              <div class="form-group">
+                <button type="submit" name="login" class="btn btn-primary">Login</button>
+              </div>
+            </form>
           </div>
         </div>
 
@@ -118,6 +146,7 @@
             </table>
           </div>
         </div>
+
       </div>
 
       <div class="col-xs-12 col-md-3">
@@ -172,6 +201,7 @@
     <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
 
     <script src="<?php echo base_url(); ?>assets/js/function.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/main.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/player.js"></script>
 
   </body>
