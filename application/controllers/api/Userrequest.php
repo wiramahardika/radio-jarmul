@@ -18,7 +18,7 @@ class Userrequest extends CI_Controller
         $this->MRequest->artist = $this->input->post('artist');
         $this->MRequest->message = $this->input->post('message');
 
-        $res = $this->MRequest->simpan();
+        $res = $this->MRequest->simpan($this->input->post('captcha'));
 
         if($res == 1)
         {

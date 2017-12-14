@@ -12,6 +12,38 @@ class MRequest extends CI_Model
     private $key = 'd486f32bc2086f0133cd0008565c2f462eb49a9f33d5e3459006afa203bd3515';
     private $table = 'user-request';
 
+    private function checkCaptcha($response)
+    {
+        $url = "https://www.google.com/recaptcha/api/siteverify";
+        $secret_token = "6LdqsTwUAAAAAGoSfn5LggdZfBWxPFX2-xZ3Kybt";
+        $data_post = array(
+            'secret' => $secret_token,
+            'response' => $response
+        );
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_post));
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $server_output = curl_exec ($ch);
+
+        curl_close ($ch);
+
+        $ret = json_decode($server_output);
+
+        if($ret->success)
+        {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
     private function encrypt_data($plaintext)
     {
         $cipher = $this->cipher;
@@ -34,10 +66,17 @@ class MRequest extends CI_Model
         return $decrypted;
     }
 
-    public function simpan()
+    public function simpan($response)
     {
         try
         {
+          $ret = $this->checkCaptcha($response);
+
+          if($ret == 0)
+          {
+              return 0;
+          }
+
           $this->nama = $this->encrypt_data($this->nama);
           $this->song = $this->encrypt_data($this->song);
           $this->artist = $this->encrypt_data($this->artist);

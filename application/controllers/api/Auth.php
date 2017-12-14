@@ -24,7 +24,7 @@ class Auth extends CI_Controller
      {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        $response = $this->input->post('chaptcha');
+        $response = $this->input->post('captcha');
 
         $res = $this->MAuth->login($username, $password, $response);
 
@@ -49,7 +49,7 @@ class Auth extends CI_Controller
      {
         $this->MAuth->logout();
      }
-     
+
     public function index()
     {
         $url = "https://www.google.com/recaptcha/api/siteverify";
