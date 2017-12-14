@@ -20,22 +20,22 @@
         <div class="panel panel-default">
           <div class="panel-heading">Request a Song</div>
           <div class="panel-body">
-            <form>
+            <form id="request-form">
               <div class="form-group">
                 <label>Your name:</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="nama" required>
               </div>
               <div class="form-group">
                 <label>Song:</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="song">
               </div>
               <div class="form-group">
                 <label>Artist:</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" name="artist">
               </div>
               <div class="form-group">
                 <label>Message:</label>
-                <textarea name="name" class="form-control" rows="3"></textarea>
+                <textarea class="form-control" rows="3" name="message"></textarea>
               </div>
               <button type="submit" class="btn btn-default">Submit</button>
             </form>
@@ -52,24 +52,21 @@
           </div>
         </div>
 
-        <div class="panel panel-default">
+        <div id="login-panel" class="panel panel-default">
           <div class="panel-heading">Login as broadcaster</div>
           <div class="panel-body">
             <form id="login-form">
               <div class="form-group">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                  <input type="text" class="form-control" name="username" placeholder="Username">
+                  <input type="text" class="form-control" name="username" placeholder="Username" required>
                 </div>
               </div>
               <div class="form-group">
                 <div class="input-group">
                   <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                  <input type="password" class="form-control" name="password" placeholder="Password">
+                  <input type="password" class="form-control" name="password" placeholder="Password" required>
                 </div>
-              </div>
-              <div class="form-group">
-                <div class="g-recaptcha" data-sitekey="6LdqsTwUAAAAAJLgEAWVRb4_ctCmFxf3-JJBoyH4"></div>
               </div>
               <div class="form-group">
                 <button type="submit" name="login" class="btn btn-primary">Login</button>
@@ -78,10 +75,17 @@
           </div>
         </div>
 
-        <div class="panel panel-default">
-          <div class="panel-heading">Requested Song</div>
+        <div id="requested-song" class="panel panel-default">
+          <div class="panel-heading" style="padding-bottom:1em;">
+            <span>Requested Song</span>
+            <button id="logout-btn" type="button" class="btn btn-sm btn-default" style="float:right;" data-placement="top" title="Logout">
+              <span class="glyphicon glyphicon-log-out"></span>
+            </button>
+          </div>
           <div class="panel-body">
-            <table class="table table-striped">
+            <p id="loading-request-list">Loading request list...</p>
+            <p id="error-request-list" style="display:none;">Unable to load request list</p>
+            <table id="loaded-request-list" class="table table-striped">
               <thead>
                 <tr>
                   <th>Time</th>
@@ -89,59 +93,7 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>08/12/2017 - 08:00</td>
-                  <td>Hymne ITS</td>
-                  <td class="text-right">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#request-details">
-                      <span class="glyphicon glyphicon-list-alt"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm">
-                      <span class="glyphicon glyphicon-trash"></span>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>08/12/2017 - 08:00</td>
-                  <td>Gereja Tua</td>
-                  <td class="text-right">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#request-details">
-                      <span class="glyphicon glyphicon-list-alt"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm">
-                      <span class="glyphicon glyphicon-trash"></span>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>08/12/2017 - 08:00</td>
-                  <td>Antara Benci dan Rindu</td>
-                  <td class="text-right">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#request-details">
-                      <span class="glyphicon glyphicon-list-alt"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm">
-                      <span class="glyphicon glyphicon-trash"></span>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>08/12/2017 - 08:00</td>
-                  <td>Gelas-gelas Kaca</td>
-                  <td class="text-right">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#request-details">
-                      <span class="glyphicon glyphicon-list-alt"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-sm">
-                      <span class="glyphicon glyphicon-trash"></span>
-                    </button>
-                  </td>
-                </tr>
-
+              <tbody id="request-list-container">
               </tbody>
             </table>
           </div>
@@ -159,36 +111,75 @@
       </div>
     </div>
 
-    <div id="request-details" class="modal fade" role="dialog">
+    <div id="template-request-modal" class="hide">
+      <div class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Request Details</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                <h4><b>REQUEST BY</b></h4>
+                <span class="name">n/a</span>
+              </p>
+              <hr>
+              <p>
+                <h4><b>SONG</b></h4>
+                <span class="song">n/a</span>
+              </p>
+              <hr>
+              <p>
+                <h4><b>ARTIST</b></h4>
+                <span class="artist">n/a</span>
+              </p>
+              <hr>
+              <p>
+                <h4><b>MESSAGE</b></h4>
+                <span class="message">n/a</span>
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="request-modal-container"></div>
+
+    <div id="request-list-template" class="hide">
+      <table>
+        <tr>
+          <td class="datetime">n/a</td>
+          <td class="title">n/a</td>
+          <td class="text-right">
+            <button type="button" class="btn btn-default btn-sm modal-trigger" data-toggle="modal">
+              <span class="glyphicon glyphicon-list-alt"></span>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm delete-request">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="captcha-prompt" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Request Details</h4>
+            <h4 class="modal-title">Are you a robot or something?</h4>
           </div>
           <div class="modal-body">
-            <p>
-              <h4><b>REQUEST BY</b></h4>
-              <span>Wira Mahardika</span>
-            </p>
-            <hr>
-            <p>
-              <h4><b>SONG</b></h4>
-              <span>Hymne ITS</span>
-            </p>
-            <hr>
-            <p>
-              <h4><b>ARTIST</b></h4>
-              <span>ITS</span>
-            </p>
-            <hr>
-            <p>
-              <h4><b>MESSAGE</b></h4>
-              <span>Salam buat temen-temen di kampus :)</span>
-            </p>
+            <div class="g-recaptcha" data-sitekey="6LdqsTwUAAAAAJLgEAWVRb4_ctCmFxf3-JJBoyH4"></div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel, I am a robot</button>
+            <button type="button" class="btn btn-primary continue-btn">Continue</button>
           </div>
         </div>
       </div>

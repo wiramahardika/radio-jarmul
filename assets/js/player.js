@@ -5,13 +5,18 @@ $( document ).ready(function() {
 });
 
 function get_song_title(){
-  // var requestingTitle = send_ajax_request('GET', 'http://' + window.location.host + ':8000/currentsong?sid=1')
+
   var requestingTitle = send_ajax_request('GET', 'song-title')
 
   requestingTitle.done(function(responseData, textStatus, xhr) {
-    $("#song-title").html(responseData);
-  })
+    if (responseData == '') {
+      $("#song-title").html("Offline");
+    }
+    else {
+      $("#song-title").html(responseData);
+    }
+  });
   requestingTitle.fail(function(responseData, textStatus, xhr) {
     $("#song-title").html("Failed to get song's information");
-  })
+  });
 }
